@@ -1,0 +1,10 @@
+{
+  "development": {
+    "username": "root",
+    "password": "mysql",
+    "database": "user_management",
+    "host": "host.docker.internal",
+    "dialect": "mysql",
+    "operatorAliases": 0
+  }
+}

@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    container_name: localhost
+    environment:
+      MYSQL_DATABASE: "user_management"
+      MYSQL_PASSWORD: "mysql"
+      MYSQL_ROOT_PASSWORD: "mysql"
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+  api:
+    container_name: myserver
+    build: ./server # Localisation du Dockerfile
+    ports:
+      - 3335:3335 # Nous exposons le port 3335
+    environment:
+      - PORT=3335 # Variables d'environnements
+    networks:
+      - mern-app # Network
+    depends_on:
+      - db
+    links:
+      - db
+
+  client:
+    container_name: myclient
+    build: ./client # Localisation du Dockerfile
+    ports:
+      - 3000:3000 # Nous exposons le port 3000
+    networks:
+      - mern-app
+    stdin_open: true
+networks:
+  mern-app:
+    driver: bridge
