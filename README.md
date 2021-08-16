@@ -1,5 +1,5 @@
 # usermanagement
-This project is work in progress
+This project is work in progress, this branch is using react-redux pattern
 
 ## how to run the project
 To run the project , you must
