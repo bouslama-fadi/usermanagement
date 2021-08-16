@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { Button, Modal } from "reactstrap";
 import AddUserModal from "../Modals/AddUserModal";
 
-const AddUserButton = ({ addUser, closeModal, text }) => {
+const AddUserButton = ({
+  addUser,
+  closeModal,
+  text,
+  handleInputChange,
+  myuser,
+}) => {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   return (
@@ -14,6 +20,8 @@ const AddUserButton = ({ addUser, closeModal, text }) => {
           closeModal={closeModal}
           modal={modal}
           toggle={toggle}
+          handleInputChange={handleInputChange}
+          myuser={myuser}
         />
       </Modal>
     </>

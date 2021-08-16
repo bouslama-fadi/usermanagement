@@ -14,17 +14,24 @@ import {
   FormFeedback,
 } from "reactstrap";
 
-const AddUserModal = ({ addUser, toggle, modal, closeModal }) => {
+const AddUserModal = ({
+  addUser,
+  toggle,
+  modal,
+  closeModal,
+  handleInputChange,
+  myuser,
+}) => {
   const { register, handleSubmit, errors } = useForm({
     shouldUseNativeValidation: true,
   });
   const onAddUser = ({ username, password, email }) => {
-    const myuser = {
-      username,
-      password,
-      email,
-    };
-    addUser(myuser);
+    // const myuser = {
+    //   username,
+    //   password,
+    //   email,
+    // };
+    addUser();
     toggle();
   };
 
@@ -45,9 +52,11 @@ const AddUserModal = ({ addUser, toggle, modal, closeModal }) => {
                     placeholder="username"
                     name="username"
                     type="text"
-                    {...register("username", {
-                      required: "Please enter your username.",
-                    })}
+                    value={myuser.username}
+                    onChange={handleInputChange}
+                    // {...register("username", {
+                    //   required: "Please enter your username.",
+                    // })}
                   />
                 </FormGroup>
               </Col>
@@ -63,9 +72,11 @@ const AddUserModal = ({ addUser, toggle, modal, closeModal }) => {
                     placeholder="password"
                     name="password"
                     type="password"
-                    {...register("password", {
-                      required: "Please enter your password.",
-                    })}
+                    value={myuser.password}
+                    onChange={handleInputChange}
+                    // {...register("password", {
+                    //   required: "Please enter your password.",
+                    // })}
                   />
                 </FormGroup>
               </Col>
@@ -81,9 +92,11 @@ const AddUserModal = ({ addUser, toggle, modal, closeModal }) => {
                     placeholder="email"
                     name="email"
                     type="email"
-                    {...register("email", {
-                      required: "Please enter your email.",
-                    })}
+                    value={myuser.email}
+                    onChange={handleInputChange}
+                    // {...register("email", {
+                    //   required: "Please enter your email.",
+                    // })}
                   />
                 </FormGroup>
               </Col>

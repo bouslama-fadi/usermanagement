@@ -5,65 +5,85 @@ import AddUserButton from "../components/Buttons/AddUserButton";
 import UsersCard from "../components/Cards/UsersCard";
 import Pagination from "../components/Buttons/Pagination";
 
+import { useDispatch, useSelector } from "react-redux";
+import { getUsers, deleteUser, addUser } from "../actions/users";
+import UserService from "../services/UserService";
+
 const userListEndpoint = `${process.env.REACT_APP_SERVER_URL}/api/v1/list`;
 
 const Dashboard = (props) => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(1);
 
+  const userslist = useSelector((state) => state.users);
+  const dispatch = useDispatch();
+
+  // /////////////////
+
+  const initialUserState = {
+    username: "",
+    password: "",
+    email: "",
+  };
+
+  const [myuser, setMyuser] = useState(initialUserState);
+
+  // ////////////////
+
   // DISPLAY USER LIST
   useEffect(() => {
-    axios
-      .get(userListEndpoint, {})
-      .then(function (response) {
-        setUsers(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    dispatch(getUsers());
   }, []);
 
-  // DELETE USER
-  const deleteUser = (id) => {
-    axios
-      .delete(`${process.env.REACT_APP_SERVER_URL}/api/v1/deleteuser/${id}`, {})
-      .then(function (response) {
-        for (let value of Object.values(users)) {
-          for (let myv of value) {
-            var arrayData = Object.entries(myv);
-            for (var [cle, valeur] of arrayData) {
-              if (cle == "id" && valeur !== id) {
-                var returnedTable = valeur;
-              }
-            }
-          }
-        }
+  //DELETE USER
+  // const deleteUser = (id) => {
+  //   axios
+  //     .delete(`${process.env.REACT_APP_SERVER_URL}/api/v1/deleteuser/${id}`, {})
+  //     .then(function (response) {
+  //       for (let value of Object.values(users)) {
+  //         for (let myv of value) {
+  //           var arrayData = Object.entries(myv);
+  //           for (var [cle, valeur] of arrayData) {
+  //             if (cle == "id" && valeur !== id) {
+  //               var returnedTable = valeur;
+  //             }
+  //           }
+  //         }
+  //       }
 
-        setUsers(returnedTable);
-        window.location.reload();
+  //       setUsers(returnedTable);
+  //       window.location.reload();
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // };
+
+  const deleteUserById = (id) => {
+    dispatch(deleteUser(id))
+      .then(() => {
+        dispatch(getUsers());
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
-  // ADD USER
-  const addUser = (user) => {
-    axios
-      .post(`${process.env.REACT_APP_SERVER_URL}/api/v1/new`, user, {})
-      .then(function () {
-        axios
-          .get(userListEndpoint, {})
-          .then(function (response) {
-            setUsers(response.data);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setMyuser({ ...myuser, [name]: value });
+  };
+
+  const addMyUsers = (user) => {
+    const { username, password, email } = myuser;
+    dispatch(addUser(username, password, email))
+      .then((data) => {
+        dispatch(getUsers());
+        console.log(data);
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -92,12 +112,12 @@ const Dashboard = (props) => {
   };
 
   // GET CURRENT USERS
-  const indexOfLastPost = currentPage * usersPerPage;
-  const indexOfFirstPost = indexOfLastPost - usersPerPage;
-  const currentUsers = Object.values(users).slice(
-    indexOfFirstPost,
-    indexOfLastPost
-  );
+  // const indexOfLastPost = currentPage * usersPerPage;
+  // const indexOfFirstPost = indexOfLastPost - usersPerPage;
+  // const currentUsers = Object.values(users).slice(
+  //   indexOfFirstPost,
+  //   indexOfLastPost
+  // );
 
   // CHANGE PAGE
   const paginate = (pageNumber) => {
@@ -109,13 +129,18 @@ const Dashboard = (props) => {
       <Container fluid className="mt-2">
         <Row>
           <div className="col-md-3 mt-3">
-            <AddUserButton addUser={addUser} text="Add user" />
+            <AddUserButton
+              addUser={addMyUsers}
+              handleInputChange={handleInputChange}
+              text="Add user"
+              myuser={myuser}
+            />
           </div>
         </Row>
         <Row>
           <UsersCard
-            users={currentUsers}
-            deleteUser={deleteUser}
+            users={userslist}
+            deleteUser={deleteUserById}
             editUser={editUser}
           />
         </Row>

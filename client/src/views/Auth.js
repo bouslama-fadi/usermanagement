@@ -15,10 +15,22 @@ import {
   FormFeedback,
 } from "reactstrap";
 import AddUserButton from "../components/Buttons/AddUserButton";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser } from "../actions/users";
 
 const Auth = ({ setMylogin, mystore }) => {
+  const dispatch = useDispatch();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const initialUserState = {
+    username: "",
+    password: "",
+    email: "",
+  };
+
+  const [myuser, setMyuser] = useState(initialUserState);
 
   const login = () => {
     axios
@@ -40,14 +52,19 @@ const Auth = ({ setMylogin, mystore }) => {
       });
   };
 
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setMyuser({ ...myuser, [name]: value });
+  };
+
   const registerUser = (user) => {
-    axios
-      .post(`${process.env.REACT_APP_SERVER_URL}/api/v1/new`, user, {})
-      .then(function () {
+    const { username, password, email } = myuser;
+    dispatch(addUser(username, password, email))
+      .then(() => {
         console.log("USER ADDED SUCCESSFULLY");
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -102,7 +119,12 @@ const Auth = ({ setMylogin, mystore }) => {
               Submit
             </Button>
 
-            <AddUserButton addUser={registerUser} text="Register" />
+            <AddUserButton
+              addUser={registerUser}
+              myuser={myuser}
+              handleInputChange={handleInputChange}
+              text="Register"
+            />
           </div>
         </Form>
       </Container>

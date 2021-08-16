@@ -10,14 +10,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./assets/css/style.css";
 
+import { Provider } from "react-redux";
+import store from "./store";
+
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      {/* <Route exact path="/dashboard">
-        <Dashboard />
-      </Route> */}
       <Route exact path="/">
-        <App />
+        <Provider store={store}>
+          <App />
+        </Provider>
       </Route>
     </Switch>
   </BrowserRouter>,
