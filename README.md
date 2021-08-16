@@ -1,9 +1,9 @@
 # usermanagement
-This project is work in progress
-this project is composed by two branches :
+This project is work in progress.
+This project is composed by two branches :
 ### main branch : 
 contains a version of the user management application without using redux pattern.
-### version_using-redux :
+### version_using_redux :
 contains a version of the user management application using redux pattern.
 
 ## how to run the project
